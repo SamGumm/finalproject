@@ -276,16 +276,14 @@ function showUpdateForm() {
     // Get form data
     //change values
     const formData = new FormData(form);
-    const id = parseInt(formData.get('id'));
+    const state = formData.get('state');
     const name = formData.get('name');
-    const price = parseInt(formData.get('price'));
+    const science_name = formData.get('science_name');
     const description = formData.get('description');
-    const category = formData.get('category');
     const image = formData.get('image');
-    const rating = parseInt(formData.get('rating'));
 
     // Update the product
-    await updateProduct(id, name, price, description, category, image, rating);
+    await updateProduct(state, name, science_name, description, image);
 
     // Clear the form
     form.reset();
@@ -293,26 +291,22 @@ function showUpdateForm() {
 
 
   //change values
-  const idInput = createTextInput('id', 'ID:');
+  const stateInput = createTextInput('id', 'ID:');
   const nameInput = createTextInput('name', 'Name:');
-  const priceInput = createTextInput('price', 'Price:');
+  const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature');
   const descriptionInput = createTextInput('description', 'Description:');
-  const categoryInput = createTextInput('category', 'Category:');
   const imageInput = createTextInput('image', 'Image:');
-  const ratingInput = createTextInput('rating', 'Rating:');
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Update Product';
 
   // Append form elements to the form
   //change values
-  form.appendChild(idInput);
+  form.appendChild(stateInput);
   form.appendChild(nameInput);
-  form.appendChild(priceInput);
+  form.appendChild(science_nameInput);
   form.appendChild(descriptionInput);
-  form.appendChild(categoryInput);
   form.appendChild(imageInput);
-  form.appendChild(ratingInput);
   form.appendChild(submitButton);
 
   // Append form to the container
@@ -335,8 +329,8 @@ async function deleteProduct(bird_name) {
 }
 
 //need to change
-async function updateProduct(id, name, price, description, category, image, rating) {
-  const url = `http://localhost:8081/updateProduct/${id}`;
+async function updateProduct(state, name, science_name, description, image) {
+  const url = `http://localhost:8081/updateProduct/${name}`;
   try {
     const response = await fetch(url, {
       method: 'PUT',
@@ -344,19 +338,19 @@ async function updateProduct(id, name, price, description, category, image, rati
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id,
+        state,
         name,
-        price,
+        science_name,
         description,
-        category,
         image,
-        rating
       })
     });
-    if (!response.ok) throw new Error('Error updating product');
+    if (!response.ok) {
+      throw new Error('Failed to update product');
+    }
     console.log('Product updated successfully');
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error updating product:', error.message);
   }
 }
 

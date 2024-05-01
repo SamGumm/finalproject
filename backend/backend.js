@@ -133,38 +133,36 @@ app.post("/addProduct", async (req, res) => {
     });
 
     //change to be in line posting board?
-    app.put("/updateProduct/:id", async (req, res) => {
+    app.put("/updateProduct/:bird_name", async (req, res) => {
         try{
-            if (results.matchedCount === 0) {
-                return res.status(404).send({ message: 'Robot not found' });
-            }
-
-            const id = Number(req.params.id);
-            const query = { id: id };
+            const name = req.params.bird_name;
+            const query = { "birds.name": name };
             await client.connect();
-            console.log("Product to Update :",id);
+            console.log("Product to Update :",name);
             // Data for updating the document
             console.log(req.body);
             const updateData = {
                 //needs to be updated
                 $set:{
-                    "id": req.body.id,
-                    "title": req.body.name,
-                    "price": req.body.price,
-                    "description": req.body.description,
-                    "category": req.body.category,
-                    "image": req.body.image,
-                    "rating": req.body.rating
+                    "birds.$.state": req.body.state,
+                    "birds.$.name": req.body.name,
+                    "birds.$.science_name": req.body.science_name,
+                    "birds.$.description": req.body.description,
+                    "birds.$.image": req.body.image,
                 }
             };
 
-            const results = await db.collection("catalog").updateOne(query, updateData, options);
+            const results = await db.collection("birds").updateOne(query, updateData);
+            if (results.matchedCount === 0) {
+                return res.status(404).send({ message: 'Bird Not Found' });
+            }
             res.status(200);
             res.send(results);
+
         }
         catch(error){
             console.error("Error updating product:", error);
-            res.status(500).send({ message: 'Internal Server Error' });
+            res.status(500).send({ message: error.message || 'Internal Server Error' });
         }
     });
     
