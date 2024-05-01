@@ -5,21 +5,9 @@ Date :  04/30
 */
 
 /*TODO
-  - HTML (done for the most part)
-    - Load states as cards on main page
-    - have button to show bird information for each state
-      - this will add the info to the state card
-          like how the CRUD buttons append to the top of the page
-      - needs secondary button to close this view
-    - have view for student info
-    - have a filter function?
-  - CSS (need to separate from html, in progress)
-  - JavaScript with DOM (in progress)
-  - REACT (done)
-  - NodeJS (done)
-  - Express (done)
-  - Mongo (done)
-  - CRUD (done?)
+  - make it pretty
+  - make the about us page
+  - maps functionality
 */
 
 
