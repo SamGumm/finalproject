@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const getButton = document.createElement('button');
   getButton.textContent = 'GET';
   getButton.onclick = () => {
+    hideGoogleMap();
     fetchAllProducts();
     showView('view-get');
 };
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
   postButton.textContent = 'POST';
   postButton.onclick = () => {
     hideAllProducts();
+    hideGoogleMap();
     showPostForm();
     showView('view-post');
   };
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
   deleteButton.textContent = 'DELETE';
   deleteButton.onclick = () => {
     hideAllProducts();
+    hideGoogleMap();
     showDeleteForm();
     showView('view-delete');
   };
@@ -89,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
   updateButton.textContent = 'UPDATE';
   updateButton.onclick = () => {
     hideAllProducts();
+    hideGoogleMap();
     showUpdateForm();
     showView('view-update');
   };
@@ -113,6 +117,15 @@ function hideAllProducts() {
   // Clear the product list
   document.getElementById('product-list').innerHTML = '';
 }
+
+function hideGoogleMap() {
+  // Hide the Google Map view
+  const mapDiv = document.getElementById('google-map');
+  if (mapDiv) {
+    mapDiv.style.display = 'none';
+  }
+}
+
 //needs to change to be in line with birds
 //fetchAllBirds maybe
 async function fetchAllProducts() {
@@ -123,9 +136,14 @@ async function fetchAllProducts() {
 
     const data = await response.json();
     const birds = data[0].birds;
+    console.log(birds);
    
     
     const container = document.getElementById('product-list');
+    if (!container) {
+      console.error('Container not found');
+      return;
+    }
     container.innerHTML = ''; // Clear previous results
 
     //change to be bird-centric
@@ -147,7 +165,11 @@ async function fetchAllProducts() {
     });
   } catch (error) {
     console.error('Error:', error);
-    document.getElementById('product-list').textContent = 'Products not found.';
+    // Check if container exists before setting textContent
+    const container = document.getElementById('product-list');
+    if (container) {
+      container.textContent = 'Products not found.';
+    }
   }
 }
 
@@ -405,99 +427,80 @@ async function updateProduct(state, name, science_name, description, image) {
 //     document.head.appendChild(script);
 // }
 
-async function showBirdLocationsOnMap(){
+let map = null;
+let markers = [];
+
+async function showBirdLocationsOnMap() {
   const url = 'http://localhost:8081/listAllProducts';
+  const mapDiv = document.getElementById('google-map');
+  if (mapDiv) {
+    mapDiv.style.display = 'block';
+  }
   try {
-    const container = document.getElementById('view-google_map');
-    container.innerHTML = '';
-    const mapDiv = document.createElement('div');
-    mapDiv.id = 'google-map';
-    mapDiv.classList.add('google-map');
-    
-    const header = document.querySelector('h1');
-    header.parentNode.insertBefore(mapDiv, header.nextSibling);
-    
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA-gFypqQtfRCQIEgCuWEEQeOCRq8XRiXs&callback=initMap&libraries=&v=weekly`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      const map = new google.maps.Map(mapDiv, {
-        center: { lat: 40, lng: -100 }, // Set the initial center of the map
-        zoom: 4 // Set the initial zoom level
+    if (!map) {
+      const container = document.getElementById('view-google_map');
+      container.innerHTML = '';
+      const mapDiv = document.createElement('div');
+      mapDiv.id = 'google-map';
+      mapDiv.classList.add('google-map');
+
+      const header = document.querySelector('h1');
+      header.parentNode.insertBefore(mapDiv, header.nextSibling);
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA-gFypqQtfRCQIEgCuWEEQeOCRq8XRiXs&callback=initMap&libraries=&v=weekly`;
+      script.async = true;
+      script.defer = true;
+
+      // Use a callback function to defer execution until the script is fully loaded
+      script.onload = () => {
+        map = new google.maps.Map(mapDiv, {
+          center: { lat: 40, lng: -100 },
+          zoom: 4
+        });
+      };
+
+      if (!document.querySelector('script[src^="https://maps.googleapis.com"]')) {
+        document.head.appendChild(script);
+      }
+    }
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error('Error fetching bird locations');
+        return response.json();
+      })
+      .then(data => {
+        const locations = data[0].google_maps_locations;
+        // Clear existing markers
+        markers.forEach(marker => {
+          marker.setMap(null);
+        });
+        markers = [];
+        locations.forEach(location => {
+          console.log(location.lat, location.long, location.name);
+          const marker = new google.maps.Marker({
+            position: { lat: parseFloat(location.lat), lng: parseFloat(location.long) },
+            map: map,
+            title: location.name
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `<h3>${location.name}</h3>`
+          });
+
+          marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+          });
+
+          markers.push(marker);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching bird locations:', error);
       });
 
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('Error fetching bird locations');
-          return response.json();
-        })
-        .then(data => {
-          const locations = data[0].google_maps_locations;
-          locations.forEach(location => {
-            console.log(location.lat, location.long, location.name);
-            const marker = new google.maps.Marker({
-              position: { lat: parseFloat(location.lat), lng: parseFloat(location.long) },
-              map: map,
-              title: location.name
-            });
-
-            const infoWindow = new google.maps.InfoWindow({
-              content: `<h3>${location.name}</h3>`
-            });
-
-            marker.addListener('click', () => {
-              infoWindow.open(map, marker);
-            });
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching bird locations:', error);
-        });
-    };
-
-    document.head.appendChild(script);
-
-  } catch(error) {
+  } catch (error) {
     console.error('Error:', error);
   }
 }
-
-// async function fetchAllProducts() {
-//   const url = 'http://localhost:8081/listAllProducts';
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) throw new Error('Error fetching products');
-
-//     const data = await response.json();
-//     const birds = data[0].birds;
-   
-    
-//     const container = document.getElementById('product-list');
-//     container.innerHTML = ''; // Clear previous results
-
-//     //change to be bird-centric
-//     birds.forEach(bird => {
-//       const productDiv = document.createElement('div');
-//       productDiv.className = 'product';
-
-//       const img = document.createElement('img');
-//       img.src = bird.image || 'path/to/default-image.jpg'; // Default image if none provided
-//       img.alt = 'Product Image';
-//       productDiv.appendChild(img);
-
-//       const details = document.createElement('div');
-//       details.className = 'product-details';
-//       details.innerHTML = `<strong>${bird.state}<br></strong><strong>${bird.name}</strong><br>${bird.description}`;
-//       productDiv.appendChild(details);
-
-//       container.appendChild(productDiv);
-//     });
-//   } catch (error) {
-//     console.error('Error:', error);
-//     document.getElementById('product-list').textContent = 'Products not found.';
-//   }
-// }
-
-
-
