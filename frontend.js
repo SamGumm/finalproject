@@ -95,24 +95,26 @@ async function fetchAllProducts() {
     const response = await fetch(url);
     if (!response.ok) throw new Error('Error fetching products');
 
-    const products = await response.json();
+    const data = await response.json();
+    const birds = data[0].birds;
+   
     
     const container = document.getElementById('product-list');
     container.innerHTML = ''; // Clear previous results
 
     //change to be bird-centric
-    products.forEach(product => {
+    birds.forEach(bird => {
       const productDiv = document.createElement('div');
       productDiv.className = 'product';
 
       const img = document.createElement('img');
-      img.src = product.image || 'path/to/default-image.jpg'; // Default image if none provided
+      img.src = bird.image || 'path/to/default-image.jpg'; // Default image if none provided
       img.alt = 'Product Image';
       productDiv.appendChild(img);
 
       const details = document.createElement('div');
       details.className = 'product-details';
-      details.innerHTML = `<strong>${product.title}</strong><br>${product.description}<br>Price: $${product.price.toFixed(2)}`;
+      details.innerHTML = `<strong>${bird.state}<br></strong><strong>${bird.name}</strong><br>${bird.description}`;
       productDiv.appendChild(details);
 
       container.appendChild(productDiv);
