@@ -239,7 +239,6 @@ function createTextInput(name, label) {
   return labelElement;
 }
 
-//change
 async function postNewProduct(newProduct) {
   const url = 'http://localhost:8081/addProduct';
   try {
@@ -263,27 +262,21 @@ function showDeleteForm() {
   // Get the view container
   const container = document.getElementById('view-delete');
   container.innerHTML = ''; // Clear previous content
-
   // Create form elements
   const form = document.createElement('form');
+
   form.addEventListener('submit', async function(event) {
     event.preventDefault();
-
     // Get form data
     const formData = new FormData(form);
     const id = formData.get('id');
-
     // Delete the product
     await deleteProduct(id);
-
     // Clear the form
     form.reset();
   });
 
-
-  //do we need to change id as a value?
-  //maybe we add a id value to the json
-  //alternatively can we just use the index a given bird is at?
+  //creating submit button
   const idInput = createTextInput('id', 'ID:');
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
@@ -303,12 +296,10 @@ function showUpdateForm() {
   // Get the view container
   const container = document.getElementById('view-update');
   container.innerHTML = ''; // Clear previous content
-
   // Create form elements
   const form = document.createElement('form');
   form.addEventListener('submit', async function(event) {
     event.preventDefault();
-
     // Get form data
     //change values
     const formData = new FormData(form);
@@ -317,16 +308,13 @@ function showUpdateForm() {
     const science_name = formData.get('science_name');
     const description = formData.get('description');
     const image = formData.get('image');
-
     // Update the product
     await updateProduct(state, name, science_name, description, image);
-
     // Clear the form
     form.reset();
   });
 
-
-  //change values
+  //getting data for json object
   const stateInput = createTextInput('id', 'ID:');
   const nameInput = createTextInput('name', 'Name:');
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature');
@@ -350,8 +338,6 @@ function showUpdateForm() {
 }
 
 async function deleteProduct(bird_name) {
-  //change url
-  //we would have to change less if we add the id to the bird data
   const url = `http://localhost:8081/deleteProduct/${bird_name}`;
   try {
     const response = await fetch(url, {
@@ -364,7 +350,6 @@ async function deleteProduct(bird_name) {
   }
 }
 
-//need to change
 async function updateProduct(state, name, science_name, description, image) {
   const url = `http://localhost:8081/updateProduct/${name}`;
   try {
