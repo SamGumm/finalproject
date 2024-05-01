@@ -82,27 +82,27 @@ app.get("/:id", async (req, res) => {
 //maybe we can do a sightings board for the CRUD
 //so we dont have to deal with making new bird objects and maps
 app.post("/addProduct", async (req, res) => {
-
+    console.log(req.body);
     try{
         await client.connect();
         const keys = Object.keys(req.body);
         const values = Object.values(req.body);
         //needs to change
         const newDocument = {
-            "id": req.body.id,
-            "title": req.body.name,
-            "price": req.body.price,
+            "state": req.body.state,
+            "name": req.body.name,
+            "science_name": req.body.science_name,
             "description": req.body.description,
-            "category": req.body.category,
             "image": req.body.image,
-            "rating": req.body.rating
             };
             console.log(newDocument);
-        const results = await db
-        .collection("catalog")
-        .insertOne(newDocument);
-        res.status(200);
-        res.send(results);
+            const filter = {}; // Empty filter to match all documents
+            const update = { $push: { birds: newDocument } }; // Use $push to add newBird to the "birds" array
+    
+            const result = await db.collection("birds").updateOne(filter, update);
+            console.log("Update result:", result);
+    
+            res.status(200).json(result);
     }
     catch(error){
         console.error("An error occurred:", error);
@@ -111,19 +111,20 @@ app.post("/addProduct", async (req, res) => {
  });
 
  //similarly needs to be changed to be in line with bird idea
- app.delete("/deleteProduct/:id", async (req, res) => {
+ app.delete("/deleteProduct/:bird_name", async (req, res) => {
     try {
-        const id = Number(req.params.id);
+        const name = req.params.bird_name;
         await client.connect();
-        console.log("Product to delete :",id);
-        const query = { id: id };
-        
-        // delete
-        const results = await db.collection("catalog").deleteOne(query);
-        res.status(200);
-        res.send(results);
-    }
+        console.log("Bird name to delete:", name);
+        const filter = { "birds.name": name }; // Match the bird by name within the "birds" array
 
+        const update = { $pull: { birds: { name: name } } }; // Use $pull to remove the bird from the "birds" array
+
+        const result = await db.collection("birds").updateOne(filter, update);
+        console.log("Update result:", result);
+
+        res.status(200).json(result);
+    }
     //wording change
     catch (error){
         console.error("Error deleting product:", error);

@@ -153,8 +153,8 @@ function showPostForm() {
     const formData = new FormData(form);
     const newProduct = {};
     for (const [key, value] of formData.entries()) {
-      if (['id', 'price', 'rating'].includes(key)) {
-        newProduct[key] = parseInt(value); // Parse id, price, and rating as integers
+      if (['time'].includes(key)) {
+        newProduct[key] = parseInt(value); 
       } else {
         newProduct[key] = value;
       }
@@ -168,28 +168,25 @@ function showPostForm() {
   });
 
   //change to be in line with birds
-  const idInput = createTextInput('id', 'ID:');
+  const stateInput = createTextInput('state', 'State:');
   const nameInput = createTextInput('name', 'Name:');
-  const priceInput = createTextInput('price', 'Price:');
+  const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature:');
   const descriptionInput = createTextInput('description', 'Description:');
-  const categoryInput = createTextInput('category', 'Category:');
   const imageInput = createTextInput('image', 'Image:');
-  const ratingInput = createTextInput('rating', 'Rating:');
+ 
 
   //change
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
-  submitButton.textContent = 'Add Product';
+  submitButton.textContent = 'Add Bird';
 
   // Append form elements to the form
   //change
-  form.appendChild(idInput);
+  form.appendChild(stateInput);
   form.appendChild(nameInput);
-  form.appendChild(priceInput);
+  form.appendChild(science_nameInput);
   form.appendChild(descriptionInput);
-  form.appendChild(categoryInput);
   form.appendChild(imageInput);
-  form.appendChild(ratingInput);
   form.appendChild(submitButton);
 
   // Append form to the container
@@ -322,10 +319,10 @@ function showUpdateForm() {
   container.appendChild(form);
 }
 
-async function deleteProduct(id) {
+async function deleteProduct(bird_name) {
   //change url
   //we would have to change less if we add the id to the bird data
-  const url = `http://localhost:8081/deleteProduct/${id}`;
+  const url = `http://localhost:8081/deleteProduct/${bird_name}`;
   try {
     const response = await fetch(url, {
       method: 'DELETE'
