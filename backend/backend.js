@@ -33,7 +33,7 @@ const client = new MongoClient(url);
 const db = client.db(dbName);
 
 //CRUD
-//birds has categories in the json, maps and birds
+//birds has categories in the json: maps and birds
 //i think we'll need to update how we interact with the db
 app.get("/listAllProducts", async (req, res) => {
     try {
