@@ -5,21 +5,28 @@ Date :  04/30
 */
 
 /*TODO
-  - HTML (in progress)
+  - HTML (done for the most part)
+    - Load states as cards on main page
+    - have button to show bird information for each state
+      - this will add the info to the state card
+          like how the CRUD buttons append to the top of the page
+      - needs secondary button to close this view
+    - have view for student info
+    - have a filter function?
   - CSS (need to separate from html, in progress)
   - JavaScript with DOM (in progress)
   - REACT (done)
   - NodeJS (done)
   - Express (done)
   - Mongo (done)
-  - CRUD (kinda, need to change things)
+  - CRUD (done?)
 */
 
 
 
 
-
-
+//mayb have fetchAllProducts run at load, and the GET button refreshes?
+//happens after html elements are loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Create views and buttons
   function showView(viewId) {
@@ -42,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   //do we still need this?
+  //maybe change to bottom of page
   document.body.insertBefore(container, document.body.firstChild); // Insert views container at the top of the body
 
   const navigation = document.createElement('div');
