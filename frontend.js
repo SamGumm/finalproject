@@ -4,6 +4,19 @@ ISU Netid : smgumm@iastate.edu
 Date :  04/30
 */
 
+/*TODO
+  - HTML (in progress)
+  - CSS (need to separate from html, in progress)
+  - JavaScript with DOM (in progress)
+  - REACT (done)
+  - NodeJS (done)
+  - Express (done)
+  - Mongo (done)
+  - CRUD (kinda, need to change things)
+*/
+
+
+
 
 
 

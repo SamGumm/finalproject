@@ -1,8 +1,17 @@
 /*
-Author: Sam Gumm
+Author: Sam Gumm, Braeden Hegarty
 ISU Netid : smgumm@iastate.edu
-Date :  04/16
+Date :  04/30
 */
+
+/*TODO
+  - change mongo connections
+  - change various wording
+  - change CRUD
+  - change variables
+  - ...
+*/
+
 var express = require("express");
 var cors = require("cors");
 var app = express();
