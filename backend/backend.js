@@ -79,7 +79,6 @@ app.get("/:id", async (req, res) => {
     }
 });
 
-//maybe we can do a sightings board for the CRUD
 //so we dont have to deal with making new bird objects and maps
 app.post("/addProduct", async (req, res) => {
     console.log(req.body);
@@ -87,7 +86,6 @@ app.post("/addProduct", async (req, res) => {
         await client.connect();
         const keys = Object.keys(req.body);
         const values = Object.values(req.body);
-        //needs to change
         const newDocument = {
             "state": req.body.state,
             "name": req.body.name,
@@ -110,7 +108,6 @@ app.post("/addProduct", async (req, res) => {
     }
  });
 
- //similarly needs to be changed to be in line with bird idea
  app.delete("/deleteProduct/:bird_name", async (req, res) => {
     try {
         const name = req.params.bird_name;
@@ -132,7 +129,7 @@ app.post("/addProduct", async (req, res) => {
     }
     });
 
-    //change to be in line posting board?
+    
     app.put("/updateProduct/:bird_name", async (req, res) => {
         try{
             const name = req.params.bird_name;
