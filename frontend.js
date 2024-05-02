@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById(viewId).style.display = 'block';
   }
-  const views = ['get', 'post', 'delete', 'update', 'google_map'];
+  const views = ['get', 'post', 'delete', 'update', 'google_map','user-selections-map'];
   const container = document.createElement('div');
   container.id = 'views';
 
@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(updateButton);
 
+  //bird location button
   const googleMapButton = document.createElement('button');
   googleMapButton.textContent = 'Google Maps';
   googleMapButton.onclick = () => {
@@ -107,6 +108,16 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(googleMapButton);
 
+  // user location selection button
+  // const userMapSelectButton = document.createElement('button');
+  // userMapSelectButton.textContent = 'User Select';
+  // userMapSelectButton.onclick = () => {
+  //   hideAllProducts();
+  //   hideGoogleMap();
+  //   showUserSelectionsMap();
+  //   showView('view-user-selections-map');
+  // };
+  // navigation.appendChild(userMapSelectButton);
 
   document.body.insertBefore(navigation, document.body.firstChild);
 });
@@ -121,6 +132,14 @@ function hideAllProducts() {
 function hideGoogleMap() {
   // Hide the Google Map view
   const mapDiv = document.getElementById('google-map');
+  if (mapDiv) {
+    mapDiv.style.display = 'none';
+  }
+}
+
+function hideSelectionMap() {
+  // Hide the Google Map view
+  const mapDiv = document.getElementById('user-selections-map');
   if (mapDiv) {
     mapDiv.style.display = 'none';
   }
@@ -401,31 +420,6 @@ async function updateProduct(state, name, science_name, description, image) {
     console.error('Error updating product:', error.message);
   }
 }
-
-// async function showGoogleMapForm(){
-//   const container = document.getElementById('view-google_map');
-//   container.innerHTML = '';
-//   const mapDiv = document.createElement('div');
-//     mapDiv.id = 'google-map';
-//     mapDiv.classList.add('google-map');
-    
-
-//     const header = document.querySelector('h1');
-//     header.parentNode.insertBefore(mapDiv, header.nextSibling);
-
-//     const script = document.createElement('script');
-//     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA-gFypqQtfRCQIEgCuWEEQeOCRq8XRiXs&callback=initMap&libraries=&v=weekly`;
-//     script.async = true;
-//     script.defer = true;
-//     script.onload = () => {
-//         const map = new google.maps.Map(mapDiv, {
-//             center: { lat: 40, lng: -100 }, // Set the initial center of the map
-//             zoom: 4 // Set the initial zoom level
-//         });
-//     };
-
-//     document.head.appendChild(script);
-// }
 
 let map = null;
 let markers = [];
