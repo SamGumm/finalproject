@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     removeLocationInput();
     fetchAllProducts();
     showView('view-get');
+    selectMapButton.style.display = 'none';
   };
   navigation.appendChild(getButton);
 
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hideAllProducts();
     showPostForm();
     showView('view-post');
+    selectMapButton.style.display = 'none';
   };
   navigation.appendChild(postButton);
 
@@ -78,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hideAllProducts()
     showDeleteForm();
     showView('view-delete');
+    selectMapButton.style.display = 'none';
   };
   navigation.appendChild(deleteButton);
 
@@ -89,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hideAllProducts()
     showUpdateForm();
     showView('view-update');
+    selectMapButton.style.display = 'none';
   };
   navigation.appendChild(updateButton);
 
@@ -100,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     removeLocationInput();
     showBirdLocationsOnMap();
     showView('view-google_map');
+    selectMapButton.style.display = 'block';
   };
   navigation.appendChild(googleMapButton);
 
@@ -111,11 +116,13 @@ document.addEventListener('DOMContentLoaded', function() {
     hideGoogleMap();
     showAboutUsForm();
     showView('view-about_us');
+    selectMapButton.style.display = 'none';
   };
   navigation.appendChild(aboutUsButton);
 
   const selectMapButton = document.createElement('button');
   selectMapButton.textContent = 'Select Location';
+  selectMapButton.style.display = 'none';
   selectMapButton.onclick = () => {
     hideAllProducts();
     clearMarkersAndEnableSelection();
@@ -279,7 +286,7 @@ async function postNewProduct(newProduct) {
       body: JSON.stringify(newProduct)
     });
     if (!response.ok) throw new Error('Error adding product');
-    console.log('Product added successfully');
+    console.log('Bird added successfully');
   } catch (error) {
     console.error('Error:', error);
   }
@@ -555,6 +562,7 @@ function addLocationInput() {
   const mapContainer = document.getElementById('google-map');
   const inputContainer = document.createElement('div');
   inputContainer.classList.add('input-container');
+  inputContainer.style.textAlign = 'center';
 
   const nameLabel = document.createElement('label');
   nameLabel.textContent = 'Enter Bird Name: ';
