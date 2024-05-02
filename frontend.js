@@ -6,9 +6,9 @@ Date :  04/30
 
 /*TODO
   - need to change ID to State
-  - add scientific name to bird card
-  - make delete (weird delay) and add (doesnt add) work?
+  - editing turns state into null
   - check edit
+  - maybe have submit button for forms call fetchAllProducts and hide the view
   - 
 */
 
@@ -162,11 +162,12 @@ function hideGoogleMap() {
   }
 }
 
-//needs to change to be in line with birds
-//fetchAllBirds maybe
+
+//Function to GET from database
 async function fetchAllProducts() {
   const url = 'http://localhost:8081/listAllProducts';
   try {
+    //making sure that fetch runs
     const response = await fetch(url);
     if (!response.ok) throw new Error('Error fetching products');
 
@@ -182,7 +183,7 @@ async function fetchAllProducts() {
     }
     container.innerHTML = ''; // Clear previous results
 
-    //change to be bird-centric
+    //iterating through birds collection for data
     birds.forEach(bird => {
       const productDiv = document.createElement('div');
       productDiv.className = 'product';
@@ -249,7 +250,7 @@ function showPostForm() {
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature:');
   const descriptionInput = createTextInput('description', 'Description:');
   const imageInput = createTextInput('image', 'Image:');
-   const submitButton = document.createElement('button');
+  const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Add Bird';
 
@@ -360,7 +361,7 @@ function showUpdateForm() {
   });
 
   //getting data for json object
-  const stateInput = createTextInput('id', 'ID:');
+  const stateInput = createTextInput('id', 'State:');
   const nameInput = createTextInput('name', 'Name:');
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature');
   const descriptionInput = createTextInput('description', 'Description:');
