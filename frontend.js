@@ -5,9 +5,11 @@ Date :  04/30
 */
 
 /*TODO
-  - make it pretty
-  - make the about us page
-  - maps functionality
+  - need to change ID to State
+  - add scientific name to bird card
+  - make delete (weird delay) and add (doesnt add) work?
+  - check edit
+  - 
 */
 
 
@@ -179,13 +181,13 @@ async function fetchAllProducts() {
       productDiv.className = 'product';
 
       const img = document.createElement('img');
-      img.src = bird.image || 'path/to/default-image.jpg'; // Default image if none provided
+      img.src = bird.image;
       img.alt = 'Product Image';
       productDiv.appendChild(img);
 
       const details = document.createElement('div');
       details.className = 'product-details';
-      details.innerHTML = `<strong>${bird.state}<br></strong><strong>${bird.name}</strong><br>${bird.description}`;
+      details.innerHTML = `<strong>${bird.state}<br></strong><strong>${bird.name}</strong><br><strong>${bird.science_name}</strong><br>${bird.description}`;
       productDiv.appendChild(details);
 
       container.appendChild(productDiv);
