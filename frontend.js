@@ -270,7 +270,7 @@ async function postNewProduct(newProduct) {
   const url = 'http://localhost:8081/addProduct';
   try {
     const response = await fetch(url, {
-      method: 'Adding new bird...',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
