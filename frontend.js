@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
   getButton.textContent = 'Home';
   getButton.onclick = () => {
     hideGoogleMap();
+    removeLocationInput();
     fetchAllProducts();
     showView('view-get');
   };
@@ -60,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const postButton = document.createElement('button');
   postButton.textContent = 'Add New Bird';
   postButton.onclick = () => {
+    hideGoogleMap();
+    removeLocationInput();
+    hideAllProducts();
     showPostForm();
     showView('view-post');
   };
@@ -69,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Remove Bird';
   deleteButton.onclick = () => {
+    hideGoogleMap();
+    removeLocationInput();
+    hideAllProducts()
     showDeleteForm();
     showView('view-delete');
   };
@@ -77,6 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const updateButton = document.createElement('button');
   updateButton.textContent = 'Edit Bird';
   updateButton.onclick = () => {
+    hideGoogleMap();
+    removeLocationInput();
+    hideAllProducts()
     showUpdateForm();
     showView('view-update');
   };
@@ -87,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
   googleMapButton.textContent = 'Google Maps';
   googleMapButton.onclick = () => {
     hideAllProducts();
+    removeLocationInput();
     showBirdLocationsOnMap();
     showView('view-google_map');
   };
@@ -95,10 +106,21 @@ document.addEventListener('DOMContentLoaded', function() {
   const aboutUsButton = document.createElement('button');
   aboutUsButton.textContent = 'About Us';
   aboutUsButton.onclick = () => {
+    hideAllProducts();
+    removeLocationInput();
+    hideGoogleMap();
     showAboutUsForm();
     showView('view-about_us');
-  }
+  };
   navigation.appendChild(aboutUsButton);
+
+  const selectMapButton = document.createElement('button');
+  selectMapButton.textContent = 'Select Location';
+  selectMapButton.onclick = () => {
+    hideAllProducts();
+    clearMarkersAndEnableSelection();
+  };
+  navigation.appendChild(selectMapButton);
 
 
   document.body.insertBefore(navigation, document.body.firstChild);
@@ -128,14 +150,6 @@ function hideAllProducts() {
 function hideGoogleMap() {
   // Hide the Google Map view
   const mapDiv = document.getElementById('google-map');
-  if (mapDiv) {
-    mapDiv.style.display = 'none';
-  }
-}
-
-function hideSelectionMap() {
-  // Hide the Google Map view
-  const mapDiv = document.getElementById('user-selections-map');
   if (mapDiv) {
     mapDiv.style.display = 'none';
   }
@@ -401,78 +415,204 @@ async function updateProduct(state, name, science_name, description, image) {
 
 let map = null;
 let markers = [];
+let selectableMap = false;
+let googleMapsScriptLoaded = false;
+
+function loadGoogleMapsScript() {
+  return new Promise((resolve, reject) => {
+    if (googleMapsScriptLoaded) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA-gFypqQtfRCQIEgCuWEEQeOCRq8XRiXs&callback=initMap&libraries=&v=weekly`;
+    script.async = true; // Load the script asynchronously
+    script.defer = true;
+    script.onload = () => {
+      googleMapsScriptLoaded = true;
+      resolve();
+    };
+    script.onerror = reject;
+
+    document.head.appendChild(script);
+  });
+}
+
+// Preload the Google Maps API script
+loadGoogleMapsScript().then(() => {
+  // Script is fully loaded, you can now use Google Maps API
+  console.log('Google Maps API script loaded');
+}).catch((error) => {
+  console.error('Error loading Google Maps API script:', error);
+});
+
+async function initMap() {
+  const container = document.getElementById('view-google_map');
+  container.innerHTML = '';
+
+  const mapDiv = document.createElement('div');
+  mapDiv.id = 'google-map';
+  mapDiv.classList.add('google-map');
+
+  const header = document.querySelector('h1');
+  header.parentNode.insertBefore(mapDiv, header.nextSibling);
+
+  map = new google.maps.Map(mapDiv, {
+    center: { lat: 40, lng: -100 },
+    zoom: 4
+  });
+  mapDiv.style.display = 'none'; // Hide the map by default
+}
 
 async function showBirdLocationsOnMap() {
   const url = 'http://localhost:8081/listAllProducts';
+  selectableMap = false;
+
+  if (!map) {
+    await initMap();
+  }
+
   const mapDiv = document.getElementById('google-map');
   if (mapDiv) {
     mapDiv.style.display = 'block';
   }
-  try {
-    if (!map) {
-      const container = document.getElementById('view-google_map');
-      container.innerHTML = '';
-      const mapDiv = document.createElement('div');
-      mapDiv.id = 'google-map';
-      mapDiv.classList.add('google-map');
 
-      const header = document.querySelector('h1');
-      header.parentNode.insertBefore(mapDiv, header.nextSibling);
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA-gFypqQtfRCQIEgCuWEEQeOCRq8XRiXs&callback=initMap&libraries=&v=weekly`;
-      script.async = true;
-      script.defer = true;
-
-      // Use a callback function to defer execution until the script is fully loaded
-      script.onload = () => {
-        map = new google.maps.Map(mapDiv, {
-          center: { lat: 40, lng: -100 },
-          zoom: 4
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error('Error fetching bird locations');
+      return response.json();
+    })
+    .then(data => {
+      const locations = data[0].google_maps_locations;
+      // Clear existing markers
+      markers.forEach(marker => {
+        marker.setMap(null);
+      });
+      markers = [];
+      locations.forEach(location => {
+        console.log(location.lat, location.long, location.name);
+        const marker = new google.maps.Marker({
+          position: { lat: parseFloat(location.lat), lng: parseFloat(location.long) },
+          map: map,
+          title: location.name
         });
-      };
 
-      if (!document.querySelector('script[src^="https://maps.googleapis.com"]')) {
-        document.head.appendChild(script);
-      }
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h3>${location.name}</h3>`
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+
+        markers.push(marker);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching bird locations:', error);
+    });
+}
+
+async function clearMarkersAndEnableSelection() {
+  addLocationInput();
+  markers.forEach(marker =>{
+    marker.setMap(null);
+  });
+  markers = [];
+  selectableMap = true;
+
+  if (!map) {
+    await initMap();
+  }
+
+  google.maps.event.addListener(map, 'click', function(event) {
+    if (selectableMap) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+
+      // Save the latitude and longitude
+      console.log('Latitude:', lat);
+      console.log('Longitude:', lng);
+
+      // Remove existing markers
+      markers.forEach(marker => {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // Add a new marker
+      const marker = new google.maps.Marker({
+        position: event.latLng,
+        map: map
+      });
+      markers.push(marker);
+    }
+  });
+}
+
+function addLocationInput() {
+  const mapContainer = document.getElementById('google-map');
+  const inputContainer = document.createElement('div');
+  inputContainer.classList.add('input-container');
+
+  const nameLabel = document.createElement('label');
+  nameLabel.textContent = 'Enter Bird Name: ';
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.id = 'bird-name';
+  inputContainer.appendChild(nameLabel);
+  inputContainer.appendChild(nameInput);
+
+  const submitButton = document.createElement('button');
+  submitButton.textContent = 'Add Location';
+  submitButton.addEventListener('click', async () => {
+    const name = document.getElementById('bird-name').value;
+    if (!name) {
+      alert('Please enter a bird name');
+      return;
     }
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) throw new Error('Error fetching bird locations');
-        return response.json();
-      })
-      .then(data => {
-        const locations = data[0].google_maps_locations;
-        // Clear existing markers
-        markers.forEach(marker => {
-          marker.setMap(null);
-        });
-        markers = [];
-        locations.forEach(location => {
-          console.log(location.lat, location.long, location.name);
-          const marker = new google.maps.Marker({
-            position: { lat: parseFloat(location.lat), lng: parseFloat(location.long) },
-            map: map,
-            title: location.name
-          });
+    const lat = markers[0].getPosition().lat();
+    const lng = markers[0].getPosition().lng();
 
-          const infoWindow = new google.maps.InfoWindow({
-            content: `<h3>${location.name}</h3>`
-          });
+    // Post the location data
+    await postNewLocation({ name, lat, lng });
 
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
+    // Clear the input field and map marker
+    document.getElementById('bird-name').value = '';
+    markers[0].setMap(null);
+    markers = [];
+  });
 
-          markers.push(marker);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching bird locations:', error);
-      });
+  inputContainer.appendChild(submitButton);
+  mapContainer.parentElement.insertBefore(inputContainer, mapContainer.nextSibling);
+}
 
+async function postNewLocation(locationData) {
+  const url = 'http://localhost:8081/addLocation';
+  try {
+    // Convert latitude and longitude to strings
+    locationData.lat = String(locationData.lat);
+    locationData.long = String(locationData.lng);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(locationData)
+    });
+    if (!response.ok) throw new Error('Error adding location');
+    console.log('Location added successfully');
   } catch (error) {
     console.error('Error:', error);
+  }
+}
+
+function removeLocationInput() {
+  const inputContainer = document.querySelector('.input-container');
+  if (inputContainer) {
+    inputContainer.remove();
   }
 }

@@ -155,5 +155,22 @@ app.post("/addProduct", async (req, res) => {
             res.status(500).send("Server error");
         }
     });
+
+    app.post("/addLocation", async (req, res) => {
+        try {
+            const { name, lat, long } = req.body;
+    
+            const filter = {}; // Empty filter to match all documents
+            const update = { $push: { google_maps_locations: { name, lat, long } } }; // Use $push to add new location to the "google_maps_locations" array
+    
+            const result = await db.collection("birds").updateOne(filter, update);
+            console.log("Update result:", result);
+    
+            res.status(200).json(result);
+        } catch (error) {
+            console.error("An error occurred:", error);
+            res.status(500).send({ error: 'An internal server error occurred' });
+        }
+    });
     
 
