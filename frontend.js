@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewDiv = document.createElement('div');
     viewDiv.id = `view-${view}`;
     viewDiv.style.display = 'none';
-    viewDiv.innerHTML = `<h2>${view.toUpperCase()} Birds</h2>`;
     container.appendChild(viewDiv);
   });
 
