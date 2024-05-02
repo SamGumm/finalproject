@@ -5,21 +5,9 @@ Date :  04/30
 */
 
 /*TODO
-  - HTML (done for the most part)
-    - Load states as cards on main page
-    - have button to show bird information for each state
-      - this will add the info to the state card
-          like how the CRUD buttons append to the top of the page
-      - needs secondary button to close this view
-    - have view for student info
-    - have a filter function?
-  - CSS (need to separate from html, in progress)
-  - JavaScript with DOM (in progress)
-  - REACT (done)
-  - NodeJS (done)
-  - Express (done)
-  - Mongo (done)
-  - CRUD (done?)
+  - make it pretty
+  - make the about us page
+  - maps functionality
 */
 
 
@@ -28,6 +16,9 @@ Date :  04/30
 //mayb have fetchAllProducts run at load, and the GET button refreshes?
 //happens after html elements are loaded
 document.addEventListener('DOMContentLoaded', function() {
+  //gets the birds after the html loads
+  //so you dont have to manually press GET
+  fetchAllProducts();
   // Create views and buttons
   function showView(viewId) {
     // Hide all views
@@ -36,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById(viewId).style.display = 'block';
   }
-  const views = ['get', 'post', 'delete', 'update', 'google_map','user-selections-map'];
+  const views = ['get', 'post', 'delete', 'update', 'google_map', 'about_us'];
   const container = document.createElement('div');
   container.id = 'views';
 
@@ -44,12 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewDiv = document.createElement('div');
     viewDiv.id = `view-${view}`;
     viewDiv.style.display = 'none';
-    viewDiv.innerHTML = `<h2>${view.toUpperCase()} Products</h2>`;
     container.appendChild(viewDiv);
   });
 
-  //do we still need this?
-  //maybe change to bottom of page
   document.body.insertBefore(container, document.body.firstChild); // Insert views container at the top of the body
 
   const navigation = document.createElement('div');
@@ -58,20 +46,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
   //GET Button
   const getButton = document.createElement('button');
-  getButton.textContent = 'GET';
+  getButton.textContent = 'Home';
   getButton.onclick = () => {
     hideGoogleMap();
     fetchAllProducts();
     showView('view-get');
-};
+  };
   navigation.appendChild(getButton);
 
   // Add POST button to navigation
   const postButton = document.createElement('button');
-  postButton.textContent = 'POST';
+  postButton.textContent = 'Add New Bird';
   postButton.onclick = () => {
-    hideAllProducts();
-    hideGoogleMap();
     showPostForm();
     showView('view-post');
   };
@@ -79,20 +65,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Add event listeners for delete and update buttons
   const deleteButton = document.createElement('button');
-  deleteButton.textContent = 'DELETE';
+  deleteButton.textContent = 'Remove Bird';
   deleteButton.onclick = () => {
-    hideAllProducts();
-    hideGoogleMap();
     showDeleteForm();
     showView('view-delete');
   };
   navigation.appendChild(deleteButton);
 
   const updateButton = document.createElement('button');
-  updateButton.textContent = 'UPDATE';
+  updateButton.textContent = 'Edit Bird';
   updateButton.onclick = () => {
-    hideAllProducts();
-    hideGoogleMap();
     showUpdateForm();
     showView('view-update');
   };
@@ -108,19 +90,31 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(googleMapButton);
 
-  // user location selection button
-  // const userMapSelectButton = document.createElement('button');
-  // userMapSelectButton.textContent = 'User Select';
-  // userMapSelectButton.onclick = () => {
-  //   hideAllProducts();
-  //   hideGoogleMap();
-  //   showUserSelectionsMap();
-  //   showView('view-user-selections-map');
-  // };
-  // navigation.appendChild(userMapSelectButton);
+  const aboutUsButton = document.createElement('button');
+  aboutUsButton.textContent = 'About Us';
+  aboutUsButton.onclick = () => {
+    showAboutUsForm();
+    showView('view-about_us');
+  }
+  navigation.appendChild(aboutUsButton);
+
 
   document.body.insertBefore(navigation, document.body.firstChild);
 });
+
+function showAboutUsForm() {
+  document.getElementById('view-about_us').style.display='none';
+  const container = document.getElementById('view-about_us');
+  container.innerHTML = ''; // Clear previous content
+  const header = document.createElement('h2');
+  header.textContent = 'About Us';
+  container.appendChild(header);
+  const form = document.createElement('h4');
+  form.innerHTML = 
+  '5/1/24<br>COM S 319<br>Braeden Hegarty bhegarty@iastate.edu<br>Sam Gumm smgumm@iastate.edu<br>';
+  container.appendChild(form);
+}
+
 
 function hideAllProducts() {
   // Hide get all view
@@ -201,7 +195,7 @@ function showPostForm() {
   container.innerHTML = ''; // Clear previous content
 
   const header = document.createElement('h2');
-  header.textContent = 'POST Product';
+  header.textContent = 'Adding new bird...';
   container.appendChild(header);
 
   // Create form elements
@@ -210,13 +204,6 @@ function showPostForm() {
     event.preventDefault();
 
     // Get form data
-    // change, not sure to what tho
-    /* maybe have forms for:
-          -time
-          -location
-          -bird description
-          -other notes
-    */
     const formData = new FormData(form);
     const newProduct = {};
     for (const [key, value] of formData.entries()) {
@@ -234,21 +221,16 @@ function showPostForm() {
     form.reset();
   });
 
-  //change to be in line with birds
   const stateInput = createTextInput('state', 'State:');
   const nameInput = createTextInput('name', 'Name:');
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature:');
   const descriptionInput = createTextInput('description', 'Description:');
   const imageInput = createTextInput('image', 'Image:');
- 
-
-  //change
-  const submitButton = document.createElement('button');
+   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Add Bird';
 
   // Append form elements to the form
-  //change
   form.appendChild(stateInput);
   form.appendChild(nameInput);
   form.appendChild(science_nameInput);
@@ -270,12 +252,11 @@ function createTextInput(name, label) {
   return labelElement;
 }
 
-//change
 async function postNewProduct(newProduct) {
   const url = 'http://localhost:8081/addProduct';
   try {
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'Adding new bird...',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -295,26 +276,25 @@ function showDeleteForm() {
   const container = document.getElementById('view-delete');
   container.innerHTML = ''; // Clear previous content
 
+  //creating header
+  const header = document.createElement('h2');
+  header.textContent = 'Removing a bird...';
+  container.appendChild(header);
   // Create form elements
   const form = document.createElement('form');
+
   form.addEventListener('submit', async function(event) {
     event.preventDefault();
-
     // Get form data
     const formData = new FormData(form);
     const id = formData.get('id');
-
     // Delete the product
     await deleteProduct(id);
-
     // Clear the form
     form.reset();
   });
 
-
-  //do we need to change id as a value?
-  //maybe we add a id value to the json
-  //alternatively can we just use the index a given bird is at?
+  //creating submit button
   const idInput = createTextInput('id', 'ID:');
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
@@ -335,11 +315,14 @@ function showUpdateForm() {
   const container = document.getElementById('view-update');
   container.innerHTML = ''; // Clear previous content
 
+  //creating header
+  const header = document.createElement('h2');
+  header.textContent = 'Editing a bird...';
+  container.appendChild(header);
   // Create form elements
   const form = document.createElement('form');
   form.addEventListener('submit', async function(event) {
     event.preventDefault();
-
     // Get form data
     //change values
     const formData = new FormData(form);
@@ -348,16 +331,13 @@ function showUpdateForm() {
     const science_name = formData.get('science_name');
     const description = formData.get('description');
     const image = formData.get('image');
-
     // Update the product
     await updateProduct(state, name, science_name, description, image);
-
     // Clear the form
     form.reset();
   });
 
-
-  //change values
+  //getting data for json object
   const stateInput = createTextInput('id', 'ID:');
   const nameInput = createTextInput('name', 'Name:');
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature');
@@ -381,8 +361,6 @@ function showUpdateForm() {
 }
 
 async function deleteProduct(bird_name) {
-  //change url
-  //we would have to change less if we add the id to the bird data
   const url = `http://localhost:8081/deleteProduct/${bird_name}`;
   try {
     const response = await fetch(url, {
@@ -395,7 +373,6 @@ async function deleteProduct(bird_name) {
   }
 }
 
-//need to change
 async function updateProduct(state, name, science_name, description, image) {
   const url = `http://localhost:8081/updateProduct/${name}`;
   try {
