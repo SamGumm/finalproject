@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   //bird location button
   const googleMapButton = document.createElement('button');
-  googleMapButton.textContent = 'Google Maps';
+  googleMapButton.textContent = 'View Bird Sightings';
   googleMapButton.onclick = () => {
     hideAllProducts();
     removeLocationInput();
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
   navigation.appendChild(aboutUsButton);
 
   const selectMapButton = document.createElement('button');
-  selectMapButton.textContent = 'Select Location';
+  selectMapButton.textContent = 'Add New Sighting Location';
   selectMapButton.style.display = 'none';
   selectMapButton.onclick = () => {
     hideAllProducts();
@@ -142,7 +142,7 @@ function showAboutUsForm() {
   container.appendChild(header);
   const form = document.createElement('h4');
   form.innerHTML = 
-  '5/1/24<br>COM S 319<br>Braeden Hegarty bhegarty@iastate.edu<br>Sam Gumm smgumm@iastate.edu<br>';
+  '5/1/24<br>COM S 319<br>Braeden Hegarty bhegarty@iastate.edu<br><p>I am a senior majoring in computer science and chemistry. I often bird watch at my home in central Iowa and think it is an enjoyable activity which we wanted to develop a website for so that others could participate as well.</p><br><img src = "https://media.licdn.com/dms/image/C4E03AQHgmggY8XjbwQ/profile-displayphoto-shrink_800_800/0/1602381485057?e=1720051200&v=beta&t=xdez_-QT4YwOMm9GHOZmYwxfdRRr_OrrgC1I7xiDtvI" alt = "Braeden Headshot" style="width: 15%; height: 15%;"><br>Sam Gumm smgumm@iastate.edu<br>';
   container.appendChild(form);
 }
 
