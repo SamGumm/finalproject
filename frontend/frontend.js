@@ -142,7 +142,7 @@ function showAboutUsForm() {
   container.appendChild(header);
   const form = document.createElement('h4');
   form.innerHTML = 
-  '5/1/24<br>COM S 319<br>Braeden Hegarty bhegarty@iastate.edu<br><p>I am a senior majoring in computer science and chemistry. I often bird watch at my home in central Iowa and think it is an enjoyable activity which we wanted to develop a website for so that others could participate as well.</p><br><img src = "https://media.licdn.com/dms/image/C4E03AQHgmggY8XjbwQ/profile-displayphoto-shrink_800_800/0/1602381485057?e=1720051200&v=beta&t=xdez_-QT4YwOMm9GHOZmYwxfdRRr_OrrgC1I7xiDtvI" alt = "Braeden Headshot" style="width: 15%; height: 15%;"><br>Sam Gumm smgumm@iastate.edu<br>';
+  '5/1/24<br>COM S 319<br>Braeden Hegarty bhegarty@iastate.edu<br><p>I am a senior majoring in computer science and chemistry. I often bird watch at my home in central Iowa and think it is an enjoyabl activity which we wanted to develop a website for so that others could participate as well.</p><br><img src = "https://media.licdn.com/dms/image/C4E03AQHgmggY8XjbwQ/profile-displayphoto-shrink_800_800/0/1602381485057?e=1720051200&v=beta&t=xdez_-QT4YwOMm9GHOZmYwxfdRRr_OrrgC1I7xiDtvI" alt = "Braeden Headshot" style="width: 15%; height: 15%;"><br><br>Sam Gumm smgumm@iastate.edu<br><img src = "https://media.licdn.com/dms/image/C5603AQECBwlYexDziQ/profile-displayphoto-shrink_400_400/0/1621610735165?e=1720051200&v=beta&t=l4A_KrElSAPjKYfE_2pOObLXDNdbXWXtDbrowhYiH2Y" alt = "Sam Headshot" style="width: 15%; height: 15%;"><br><p>My name is Sam, and I am a senior majoring in Computer Science. I enjoy knowing about my local birds, so I wanted a resource such as this website to assist myself and others in that.</p><br>';
   container.appendChild(form);
 }
 
