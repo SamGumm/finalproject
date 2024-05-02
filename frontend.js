@@ -314,7 +314,6 @@ function showUpdateForm() {
   // Get the view container
   const container = document.getElementById('view-update');
   container.innerHTML = ''; // Clear previous content
-
   //creating header
   const header = document.createElement('h2');
   header.textContent = 'Editing a bird...';
