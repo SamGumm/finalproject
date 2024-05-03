@@ -4,14 +4,6 @@ ISU Netid : smgumm@iastate.edu
 Date :  04/30
 */
 
-/*TODO
-  - change mongo connections
-  - change various wording
-  - change CRUD
-  - change variables
-  - ...
-*/
-
 var express = require("express");
 var cors = require("cors");
 var app = express();
@@ -38,7 +30,6 @@ app.get("/listAllProducts", async (req, res) => {
         console.log("Fetching all products from MongoDB");
         const query = {}; // An empty query object fetches all documents
 
-        //there are two arrays in birds
         const results = await db.collection("birds")
             .find(query)
             .toArray(); // Convert to array to send back to the client
@@ -95,7 +86,7 @@ app.post("/addProduct", async (req, res) => {
 
         res.status(200).json(result);
     }
-    //wording change
+
     catch (error){
         console.error("Error deleting product:", error);
         res.status(500).send({ message: 'Internal Server Error' });
@@ -112,7 +103,7 @@ app.post("/addProduct", async (req, res) => {
             // Data for updating the document
             console.log(req.body);
             const updateData = {
-                //needs to be updated
+
                 $set:{
                     "birds.$.state": req.body.state,
                     "birds.$.name": req.body.name,
@@ -141,12 +132,12 @@ app.post("/addProduct", async (req, res) => {
             console.log("Fetching all products from MongoDB");
             const query = {}; // An empty query object fetches all documents
     
-            //there are two arrays in birds
+
             const results = await db.collection("birds")
                 .find(query)
                 .toArray(); // Convert to array to send back to the client
     
-                //change wording
+
                 console.log("Birds and maps retrieved:", results.length);
     
             res.status(200).json(results); // Send results as JSON

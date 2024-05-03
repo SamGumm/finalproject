@@ -4,18 +4,6 @@ ISU Netid : smgumm@iastate.edu
 Date :  04/30
 */
 
-/*TODO
-  - need to change ID to State
-  - editing turns state into null
-  - check edit
-  - maybe have submit button for forms call fetchAllProducts and hide the view
-  - 
-*/
-
-
-
-
-//mayb have fetchAllProducts run at load, and the GET button refreshes?
 //happens after html elements are loaded
 document.addEventListener('DOMContentLoaded', function() {
   //gets the birds after the html loads
@@ -71,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(postButton);
 
-  // Add event listeners for delete and update buttons
+  // Add DELETE button to navigation
   const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Remove Bird';
   deleteButton.onclick = () => {
@@ -84,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(deleteButton);
 
+  //Add UPDATE button to navigation
   const updateButton = document.createElement('button');
   updateButton.textContent = 'Edit Bird';
   updateButton.onclick = () => {
@@ -96,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(updateButton);
 
-  //bird location button
+  //Add MAPS button to navigation
   const googleMapButton = document.createElement('button');
   googleMapButton.textContent = 'View Bird Sightings';
   googleMapButton.onclick = () => {
@@ -108,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(googleMapButton);
 
+  //Add ABOUT button to navigation
   const aboutUsButton = document.createElement('button');
   aboutUsButton.textContent = 'About Us';
   aboutUsButton.onclick = () => {
@@ -120,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(aboutUsButton);
 
+  //Add MAPSELECT button to navigation
   const selectMapButton = document.createElement('button');
   selectMapButton.textContent = 'Add New Sighting Location';
   selectMapButton.style.display = 'none';
@@ -129,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   navigation.appendChild(selectMapButton);
 
-
+  //Insert Navigation at top of page
   document.body.insertBefore(navigation, document.body.firstChild);
 });
 
@@ -319,7 +310,7 @@ function showDeleteForm() {
   });
 
   //creating submit button
-  const idInput = createTextInput('id', 'ID:');
+  const idInput = createTextInput('id', 'Bird Name:');
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Delete Product';
