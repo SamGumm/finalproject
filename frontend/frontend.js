@@ -361,7 +361,7 @@ function showUpdateForm() {
   });
 
   //getting data for json object
-  const stateInput = createTextInput('id', 'State:');
+  const stateInput = createTextInput('state', 'State:');
   const nameInput = createTextInput('name', 'Name:');
   const science_nameInput = createTextInput('science_name', 'Scientific Nomenclature');
   const descriptionInput = createTextInput('description', 'Description:');
